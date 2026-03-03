@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CPA Pro — Agent Comptable IA</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #f4f3ef;
+  --bg2:      #ede9e0;
+  --surface:  #faf9f6;
+  --card:     #ffffff;
+  --navy:     #0f1f3d;
+  --navy2:    #1a3260;
+  --gold:     #b8922a;
+  --gold-lt:  #d4aa4a;
+  --gold-bg:  #fdf6e3;
+  --green:    #1a6b4a;
+  --green-lt: #e8f5ee;
+  --red:      #a02020;
+  --red-lt:   #fdeaea;
+  --blue:     #1a4d8f;
+  --blue-lt:  #e8f0fc;
+  --text:     #1a1a2e;
+  --text2:    #4a4a6a;
+  --muted:    #8a8aa0;
+  --border:   #ddd8cc;
+  --shadow:   0 2px 16px rgba(15,31,61,0.08);
+  --shadow-lg:0 8px 40px rgba(15,31,61,0.12);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;}
+
+body {
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  display:flex;flex-direction:column;
+}
+
+/* ── HEADER ── */
+header {
+  height:60px;flex-shrink:0;
+  background:var(--navy);
+  display:flex;align-items:center;gap:14px;
+  padding:0 22px;
+  box-shadow:0 2px 20px rgba(15,31,61,0.3);
+  z-index:50;
+}
+.logo-mark {
+  width:38px;height:38px;border-radius:10px;
+  background:linear-gradient(135deg,var(--gold),#8b6820);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'DM Serif Display',serif;
+  font-size:1rem;font-weight:400;color:white;
+  letter-spacing:1px;flex-shrink:0;
+  box-shadow:0 2px 12px rgba(184,146,42,0.5);
+}
+.header-title {
+  font-family:'DM Serif Display',serif;
+  font-size:1.15rem;color:#f0ead8;letter-spacing:0.3px;
+}
+.header-title span{color:var(--gold-lt);}
+.header-sub {
+  font-size:0.7rem;color:rgba(240,234,216,0.5);
+  font-weight:500;letter-spacing:1px;text-transform:uppercase;
+  margin-top:1px;
+}
+
+.cpa-badge {
+  margin-left:auto;
+  display:flex;align-items:center;gap:8px;
+  background:rgba(184,146,42,0.15);
+  border:1px solid rgba(184,146,42,0.35);
+  border-radius:6px;padding:5px 12px;
+  font-size:0.7rem;font-weight:600;
+  color:var(--gold-lt);letter-spacing:1px;
+}
+
+/* ── LAYOUT ── */
+.app {
+  flex:1;display:flex;overflow:hidden;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width:220px;flex-shrink:0;
+  background:var(--navy);
+  border-right:1px solid rgba(255,255,255,0.06);
+  display:flex;flex-direction:column;
+  overflow-y:auto;
+  scrollbar-width:none;
+}
+.sidebar::-webkit-scrollbar{display:none;}
+
+.sidebar-section {
+  padding:16px 12px 8px;
+}
+.sidebar-label {
+  font-size:0.62rem;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;color:rgba(240,234,216,0.3);
+  padding:0 8px;margin-bottom:6px;
+}
+
+.nav-item {
+  display:flex;align-items:center;gap:10px;
+  padding:9px 10px;border-radius:8px;
+  font-size:0.8rem;font-weight:500;
+  color:rgba(240,234,216,0.6);
+  cursor:pointer;transition:all 0.18s;
+  border:1px solid transparent;
+  margin-bottom:2px;
+}
+.nav-item:hover {
+  background:rgba(255,255,255,0.06);
+  color:rgba(240,234,216,0.9);
+}
+.nav-item.active {
+  background:rgba(184,146,42,0.18);
+  border-color:rgba(184,146,42,0.3);
+  color:var(--gold-lt);
+}
+.nav-item .nav-icon{font-size:1rem;width:22px;text-align:center;}
+.nav-item .nav-badge {
+  margin-left:auto;font-size:0.62rem;font-weight:700;
+  background:var(--gold);color:var(--navy);
+  border-radius:10px;padding:1px 6px;
+}
+
+.sidebar-divider {
+  margin:8px 12px;
+  border:none;border-top:1px solid rgba(255,255,255,0.06);
+}
+
+.quick-topics {
+  padding:0 12px 12px;
+  display:flex;flex-direction:column;gap:4px;
+}
+.qtopic {
+  padding:7px 10px;border-radius:7px;
+  font-size:0.75rem;font-weight:500;
+  color:rgba(240,234,216,0.55);
+  cursor:pointer;transition:all 0.15s;
+  display:flex;align-items:center;gap:8px;
+}
+.qtopic:hover{background:rgba(255,255,255,0.05);color:rgba(240,234,216,0.85);}
+.qtopic .dot{width:5px;height:5px;border-radius:50%;background:var(--muted);flex-shrink:0;}
+
+/* ── MAIN CONTENT ── */
+.main {
+  flex:1;display:flex;flex-direction:column;overflow:hidden;
+  background:var(--bg);
+}
+
+/* ── TOOL STRIP ── */
+.tool-strip {
+  height:46px;flex-shrink:0;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:6px;
+  padding:0 16px;
+  box-shadow:0 1px 4px rgba(15,31,61,0.05);
+}
+.tool-btn {
+  height:30px;padding:0 12px;
+  border-radius:6px;border:1px solid var(--border);
+  background:var(--card);
+  font-family:'DM Sans',sans-serif;
+  font-size:0.72rem;font-weight:600;
+  color:var(--text2);cursor:pointer;
+  transition:all 0.15s;
+  display:flex;align-items:center;gap:5px;
+  white-space:nowrap;
+}
+.tool-btn:hover{background:var(--bg2);border-color:#c0bbb0;color:var(--text);}
+.tool-btn.primary{
+  background:var(--navy);border-color:var(--navy);
+  color:#f0ead8;
+}
+.tool-btn.primary:hover{background:var(--navy2);}
+.tool-sep{width:1px;height:20px;background:var(--border);margin:0 4px;}
+
+/* ── CHAT PANEL ── */
+.chat-wrap {
+  flex:1;display:flex;overflow:hidden;
+}
+
+.chat-main {
+  flex:1;display:flex;flex-direction:column;overflow:hidden;
+}
+
+.messages {
+  flex:1;overflow-y:auto;
+  padding:20px 24px;
+  display:flex;flex-direction:column;gap:18px;
+  scrollbar-width:thin;
+  scrollbar-color:var(--border) transparent;
+}
+.messages::-webkit-scrollbar{width:4px;}
+.messages::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+
+/* Message bubbles */
+.msg {
+  display:flex;gap:12px;
+  animation:msgIn 0.25s ease;
+}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.msg.user{flex-direction:row-reverse;}
+.msg.user .bubble{
+  background:var(--navy);color:#f0ead8;
+  border-radius:16px 4px 16px 16px;
+  max-width:75%;
+}
+.msg-av{
+  width:34px;height:34px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;flex-shrink:0;
+  font-family:'DM Serif Display',serif;font-weight:400;
+}
+.msg.bot .msg-av{
+  background:linear-gradient(135deg,var(--gold),#8b6820);
+  color:white;font-size:14px;letter-spacing:0.5px;
+}
+.msg.user .msg-av{
+  background:var(--navy2);color:#f0ead8;font-size:12px;
+}
+
+.bubble {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:4px 16px 16px 16px;
+  padding:14px 18px;
+  font-size:0.88rem;line-height:1.7;
+  max-width:85%;
+  box-shadow:var(--shadow);
+}
+
+/* Rich content inside bubbles */
+.bubble h4 {
+  font-family:'DM Serif Display',serif;
+  font-size:1rem;color:var(--navy);
+  margin-bottom:8px;padding-bottom:8px;
+  border-bottom:2px solid var(--gold-bg);
+}
+.bubble b{color:var(--navy);font-weight:700;}
+.bubble em{color:var(--green);font-style:normal;font-weight:600;}
+
+.journal-entry {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-left:3px solid var(--navy);
+  border-radius:0 8px 8px 0;
+  padding:12px 14px;
+  margin:10px 0;
+  font-family:'DM Sans',monospace;
+  font-size:0.82rem;
+}
+.journal-entry .je-title{
+  font-family:'DM Serif Display',serif;
+  font-size:0.85rem;color:var(--navy);
+  margin-bottom:8px;font-weight:400;
+}
+.je-row {
+  display:grid;grid-template-columns:1fr 80px 80px;
+  gap:8px;padding:4px 0;
+  border-bottom:1px solid rgba(0,0,0,0.04);
+  font-size:0.8rem;
+}
+.je-row:last-child{border-bottom:none;}
+.je-row.header{
+  font-weight:700;font-size:0.72rem;
+  text-transform:uppercase;letter-spacing:0.5px;
+  color:var(--muted);border-bottom:1px solid var(--border);
+  margin-bottom:4px;
+}
+.je-row.total{
+  font-weight:700;border-top:2px solid var(--navy);
+  margin-top:4px;padding-top:8px;color:var(--navy);
+}
+.dr{color:var(--navy);text-align:right;}
+.cr{color:var(--navy);text-align:right;}
+
+.formula-box {
+  background:var(--navy);color:#f0ead8;
+  border-radius:8px;padding:12px 16px;
+  margin:10px 0;font-family:'DM Sans',monospace;
+  font-size:0.88rem;text-align:center;
+  letter-spacing:0.5px;
+}
+.formula-box .formula-label{
+  font-size:0.65rem;letter-spacing:2px;
+  color:var(--gold-lt);text-transform:uppercase;
+  margin-bottom:6px;font-family:'DM Sans',sans-serif;
+}
+
+.info-box {
+  border-radius:8px;padding:11px 14px;
+  margin:10px 0;font-size:0.83rem;
+  display:flex;gap:10px;align-items:flex-start;
+}
+.info-box.tip{background:var(--gold-bg);border:1px solid rgba(184,146,42,0.25);}
+.info-box.tip .ib-icon{color:var(--gold);}
+.info-box.rule{background:var(--blue-lt);border:1px solid rgba(26,77,143,0.2);}
+.info-box.rule .ib-icon{color:var(--blue);}
+.info-box.warn{background:var(--red-lt);border:1px solid rgba(160,32,32,0.2);}
+.info-box.warn .ib-icon{color:var(--red);}
+.info-box.ok{background:var(--green-lt);border:1px solid rgba(26,107,74,0.2);}
+.info-box.ok .ib-icon{color:var(--green);}
+.ib-icon{font-size:1rem;flex-shrink:0;margin-top:1px;}
+.ib-text{line-height:1.5;color:var(--text);}
+
+.ref-tag {
+  display:inline-block;
+  background:var(--blue-lt);
+  border:1px solid rgba(26,77,143,0.2);
+  border-radius:4px;padding:1px 7px;
+  font-size:0.72rem;font-weight:700;color:var(--blue);
+  margin:2px;letter-spacing:0.3px;
+}
+
+.balance-table {
+  width:100%;border-collapse:collapse;
+  font-size:0.8rem;margin:10px 0;
+}
+.balance-table th {
+  background:var(--navy);color:#f0ead8;
+  padding:7px 10px;text-align:left;
+  font-weight:600;font-size:0.72rem;letter-spacing:0.5px;
+}
+.balance-table td{padding:6px 10px;border-bottom:1px solid var(--border);}
+.balance-table tr:hover td{background:var(--bg);}
+.balance-table .subtotal td{font-weight:700;background:var(--bg2);}
+.balance-table .total td{font-weight:700;background:var(--navy);color:#f0ead8;}
+.balance-table .amt{text-align:right;}
+
+/* Thinking */
+.thinking-row{display:flex;gap:12px;}
+.thinking-dots{display:flex;gap:5px;padding:14px 18px;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:4px 16px 16px 16px;box-shadow:var(--shadow);}
+.tdot{width:7px;height:7px;border-radius:50%;background:var(--navy);animation:tdA 1.2s ease-in-out infinite;}
+.tdot:nth-child(2){animation-delay:.2s;background:var(--gold);}
+.tdot:nth-child(3){animation-delay:.4s;background:var(--green);}
+@keyframes tdA{0%,80%,100%{transform:scale(0.6);opacity:0.3}40%{transform:scale(1);opacity:1}}
+
+/* Input area */
+.input-wrap {
+  background:var(--surface);
+  border-top:1px solid var(--border);
+  padding:14px 20px;
+  flex-shrink:0;
+}
+.quick-prompts {
+  display:flex;gap:6px;margin-bottom:10px;
+  overflow-x:auto;scrollbar-width:none;flex-wrap:wrap;
+}
+.quick-prompts::-webkit-scrollbar{display:none;}
+.qp {
+  flex-shrink:0;padding:4px 11px;
+  border-radius:14px;border:1px solid var(--border);
+  background:var(--card);color:var(--text2);
+  font-size:0.72rem;font-weight:600;cursor:pointer;
+  transition:all 0.15s;white-space:nowrap;
+}
+.qp:hover{border-color:var(--navy);color:var(--navy);background:var(--bg2);}
+
+.input-row {
+  display:flex;gap:8px;align-items:flex-end;
+}
+#user-input {
+  flex:1;padding:11px 16px;
+  background:var(--card);
+  border:1.5px solid var(--border);
+  border-radius:10px;
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  font-size:0.88rem;
+  resize:none;outline:none;
+  max-height:120px;line-height:1.5;
+  transition:border-color 0.2s;
+  box-shadow:0 1px 4px rgba(15,31,61,0.05);
+}
+#user-input:focus{border-color:var(--navy);}
+#user-input::placeholder{color:var(--muted);}
+#send-btn {
+  width:42px;height:42px;border-radius:10px;flex-shrink:0;
+  border:none;background:var(--navy);color:#f0ead8;
+  font-size:1.1rem;cursor:pointer;transition:all 0.18s;
+  display:flex;align-items:center;justify-content:center;
+}
+#send-btn:hover{background:var(--navy2);transform:translateY(-1px);}
+#send-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+
+/* ── RIGHT PANEL — Reference ── */
+.ref-panel {
+  width:240px;flex-shrink:0;
+  background:var(--surface);
+  border-left:1px solid var(--border);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+.ref-header {
+  padding:14px 16px 10px;
+  border-bottom:1px solid var(--border);
+  font-family:'DM Serif Display',serif;
+  font-size:0.85rem;color:var(--navy);
+}
+.ref-body {
+  flex:1;overflow-y:auto;padding:12px;
+  scrollbar-width:thin;scrollbar-color:var(--border) transparent;
+}
+.ref-body::-webkit-scrollbar{width:3px;}
+.ref-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:10px;padding:12px;
+  margin-bottom:10px;
+  cursor:pointer;transition:all 0.15s;
+}
+.ref-card:hover{border-color:#b0a890;box-shadow:var(--shadow);}
+.ref-card h5 {
+  font-family:'DM Serif Display',serif;
+  font-size:0.82rem;color:var(--navy);
+  margin-bottom:5px;font-weight:400;
+}
+.ref-card p{font-size:0.73rem;color:var(--text2);line-height:1.5;}
+.ref-card .ref-tag-row{margin-top:7px;display:flex;flex-wrap:wrap;gap:3px;}
+
+.norm-badge {
+  display:inline-block;
+  background:var(--navy);color:var(--gold-lt);
+  border-radius:4px;padding:2px 8px;
+  font-size:0.68rem;font-weight:700;
+  letter-spacing:1px;margin-bottom:8px;
+}
+
+/* ── WELCOME CARD ── */
+.welcome-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:4px 16px 16px 16px;
+  padding:20px 22px;
+  box-shadow:var(--shadow);
+  max-width:85%;
+}
+.welcome-card h3 {
+  font-family:'DM Serif Display',serif;
+  font-size:1.15rem;color:var(--navy);
+  margin-bottom:10px;
+}
+.welcome-grid {
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:8px;margin:14px 0;
+}
+.wg-item {
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:8px;padding:10px 12px;
+  font-size:0.78rem;line-height:1.4;
+  cursor:pointer;transition:all 0.15s;
+}
+.wg-item:hover{background:var(--bg2);border-color:#b0a890;}
+.wg-item strong{display:block;color:var(--navy);font-weight:700;margin-bottom:2px;}
+
+@media(max-width:900px){
+  .ref-panel{display:none;}
+  .sidebar{width:180px;}
+}
+@media(max-width:640px){
+  .sidebar{display:none;}
+  .welcome-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-mark">CPA</div>
+  <div>
+    <div class="header-title">Agent Comptable <span>Pro</span></div>
+    <div class="header-sub">CPA Canada · IFRS · ASPE · Comptabilité Avancée</div>
+  </div>
+  <div class="cpa-badge">🍁 CPA Canada · En français</div>
+</header>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Modules CPA</div>
+
+      <div class="nav-item active" onclick="setModule('general',this)">
+        <span class="nav-icon">💬</span> Assistant général
+      </div>
+      <div class="nav-item" onclick="setModule('ifrs',this)">
+        <span class="nav-icon">📋</span> IFRS / IAS
+        <span class="nav-badge">41</span>
+      </div>
+      <div class="nav-item" onclick="setModule('aspe',this)">
+        <span class="nav-icon">🍁</span> ASPE
+      </div>
+      <div class="nav-item" onclick="setModule('consolidation',this)">
+        <span class="nav-icon">🏢</span> Consolidation
+      </div>
+      <div class="nav-item" onclick="setModule('instruments',this)">
+        <span class="nav-icon">📊</span> Instruments financiers
+      </div>
+      <div class="nav-item" onclick="setModule('fiscalite',this)">
+        <span class="nav-icon">🧾</span> Fiscalité
+      </div>
+      <div class="nav-item" onclick="setModule('audit',this)">
+        <span class="nav-icon">🔍</span> Audit & Certification
+      </div>
+      <div class="nav-item" onclick="setModule('couts',this)">
+        <span class="nav-icon">⚙️</span> Comptabilité de coûts
+      </div>
+    </div>
+
+    <hr class="sidebar-divider">
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Problèmes fréquents</div>
+    </div>
+
+    <div class="quick-topics">
+      <div class="qtopic" onclick="quickAsk('Comment comptabiliser une dépréciation selon IAS 36 ?')">
+        <div class="dot"></div> Dépréciation IAS 36
+      </div>
+      <div class="qtopic" onclick="quickAsk('Expliquer les écritures de regroupement d\'entreprises selon IFRS 3')">
+        <div class="dot"></div> Regroupement IFRS 3
+      </div>
+      <div class="qtopic" onclick="quickAsk('Comment traiter les impôts différés selon IAS 12 ?')">
+        <div class="dot"></div> Impôts différés IAS 12
+      </div>
+      <div class="qtopic" onclick="quickAsk('Comptabilisation des contrats de location selon IFRS 16')">
+        <div class="dot"></div> Locations IFRS 16
+      </div>
+      <div class="qtopic" onclick="quickAsk('Comment faire une consolidation avec participation ne donnant pas le contrôle ?')">
+        <div class="dot"></div> Participation minoritaire
+      </div>
+      <div class="qtopic" onclick="quickAsk('Différence entre IFRS et ASPE pour les immobilisations corporelles')">
+        <div class="dot"></div> IFRS vs ASPE
+      </div>
+      <div class="qtopic" onclick="quickAsk('Traitement comptable des instruments financiers dérivés selon IFRS 9')">
+        <div class="dot"></div> Dérivés IFRS 9
+      </div>
+      <div class="qtopic" onclick="quickAsk('Comment calculer la valeur d\'utilité pour un test de dépréciation ?')">
+        <div class="dot"></div> Valeur d'utilité
+      </div>
+      <div class="qtopic" onclick="quickAsk('Comptabilisation des avantages du personnel selon IAS 19')">
+        <div class="dot"></div> Avantages IAS 19
+      </div>
+      <div class="qtopic" onclick="quickAsk('Provisions et passifs éventuels selon IAS 37')">
+        <div class="dot"></div> Provisions IAS 37
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOOL STRIP -->
+    <div class="tool-strip">
+      <button class="tool-btn" onclick="quickAsk('Donne-moi un problème pratique de comptabilité avancée à résoudre')">✏️ Problème pratique</button>
+      <button class="tool-btn" onclick="quickAsk('Crée un tableau comparatif IFRS vs ASPE pour les principaux sujets')">📊 Tableau IFRS/ASPE</button>
+      <button class="tool-btn" onclick="quickAsk('Génère un exercice de consolidation avec solution détaillée')">🏢 Exercice consolidation</button>
+      <div class="tool-sep"></div>
+      <button class="tool-btn" onclick="quickAsk('Résume les normes IAS et IFRS les plus testées à l\'examen CPA Canada')">📚 Révision examen</button>
+      <button class="tool-btn" onclick="quickAsk('Quelles sont les erreurs les plus fréquentes en comptabilité avancée CPA ?')">⚠️ Erreurs fréquentes</button>
+      <div class="tool-sep"></div>
+      <button class="tool-btn primary" onclick="clearChat()">🗑 Effacer</button>
+    </div>
+
+    <!-- CHAT -->
+    <div class="chat-wrap">
+      <div class="chat-main">
+        <div class="messages" id="messages">
+
+          <!-- Welcome -->
+          <div class="msg bot">
+            <div class="msg-av">CPA</div>
+            <div class="welcome-card">
+              <h3>Bonjour ! Je suis votre Agent Comptable CPA 🍁</h3>
+              <p style="font-size:0.85rem;color:var(--text2);line-height:1.6">
+                Je suis spécialisé en <strong>comptabilité avancée canadienne</strong> — IFRS, ASPE, consolidation, instruments financiers, fiscalité et préparation à l'examen CPA Canada. Je réponds en français avec des écritures de journal détaillées, des formules et des références aux normes.
+              </p>
+
+              <div class="welcome-grid">
+                <div class="wg-item" onclick="quickAsk('Explique-moi IFRS 16 locations avec un exemple chiffré et les écritures de journal')">
+                  <strong>📋 IFRS 16 — Locations</strong>
+                  Preneur / Bailleur, VAN, écritures
+                </div>
+                <div class="wg-item" onclick="quickAsk('Comment faire une consolidation complète avec élimination des transactions intercompagnies ? Montre-moi un exemple avec chiffres')">
+                  <strong>🏢 Consolidation</strong>
+                  États financiers consolidés
+                </div>
+                <div class="wg-item" onclick="quickAsk('Explique les impôts différés IAS 12 avec un exemple de différence temporaire et les écritures')">
+                  <strong>🧾 Impôts différés IAS 12</strong>
+                  Actifs / passifs d'impôt
+                </div>
+                <div class="wg-item" onclick="quickAsk('Comment comptabiliser les instruments financiers selon IFRS 9 — classement, évaluation et dépréciation ECL ?')">
+                  <strong>📊 IFRS 9 — Instruments fin.</strong>
+                  Classement, ECL, couverture
+                </div>
+                <div class="wg-item" onclick="quickAsk('Montre-moi un problème complet de regroupement d\'entreprises IFRS 3 avec goodwill et ajustements à la juste valeur')">
+                  <strong>🤝 Regroupements IFRS 3</strong>
+                  Goodwill, juste valeur
+                </div>
+                <div class="wg-item" onclick="quickAsk('Explique la comptabilisation des avantages du personnel IAS 19 — régimes à cotisations et à prestations définies avec écritures')">
+                  <strong>👥 IAS 19 — Personnel</strong>
+                  Régimes retraite, DBO
+                </div>
+              </div>
+
+              <div class="info-box tip">
+                <span class="ib-icon">💡</span>
+                <span class="ib-text"><strong>Astuce :</strong> Posez vos problèmes avec les chiffres — je fournis les écritures de journal complètes, les formules et les références aux normes CPA Canada.</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Quick prompts -->
+        <div class="quick-prompts" id="quick-prompts">
+          <button class="qp" onclick="quickAsk('Quelle est la différence entre méthode de la mise en équivalence et consolidation intégrale ?')">📊 Mise en équivalence vs consolidation</button>
+          <button class="qp" onclick="quickAsk('Comment tester la dépréciation d\'un goodwill selon IAS 36 avec chiffres ?')">📉 Test dépréciation goodwill</button>
+          <button class="qp" onclick="quickAsk('Explique les contrats de construction selon IFRS 15 avec exemple')">🏗️ Revenus IFRS 15</button>
+          <button class="qp" onclick="quickAsk('Comment comptabiliser une couverture de juste valeur selon IFRS 9 ?')">🛡️ Comptabilité de couverture</button>
+          <button class="qp" onclick="quickAsk('Donne-moi les étapes pour résoudre un problème d\'examen CPA sur la consolidation')">🎯 Méthode examen CPA</button>
+        </div>
+
+        <!-- Input -->
+        <div class="input-wrap">
+          <div class="input-row">
+            <textarea id="user-input" rows="1"
+              placeholder="Posez votre problème comptable... (avec chiffres pour une solution complète)"
+              onkeydown="handleKey(event)"
+              oninput="autoResize(this)"></textarea>
+            <button id="send-btn" onclick="sendMessage()">➤</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- REF PANEL -->
+      <div class="ref-panel">
+        <div class="ref-header">📚 Références rapides</div>
+        <div class="ref-body">
+
+          <div class="ref-card" onclick="quickAsk('Résume les principales exigences de IFRS 16 pour les contrats de location')">
+            <span class="norm-badge">IFRS 16</span>
+            <h5>Contrats de location</h5>
+            <p>Droit d'utilisation, obligation locative, VAN des paiements futurs</p>
+            <div class="ref-tag-row">
+              <span class="ref-tag">Preneur</span>
+              <span class="ref-tag">Bailleur</span>
+              <span class="ref-tag">VAN</span>
+            </div>
+          </div>
+
+          <div class="ref-card" onclick="quickAsk('Explique les critères de comptabilisation et d\'évaluation selon IAS 36 dépréciation des actifs')">
+            <span class="norm-badge">IAS 36</span>
+            <h5>Dépréciation des actifs</h5>
+            <p>Valeur recouvrable = max(JV nette, valeur d'utilité)</p>
+            <div class="ref-tag-row">
+              <span class="ref-tag">UGT</span>
+              <span class="ref-tag">Goodwill</span>
+              <span class="ref-tag">VAN flux</span>
+            </div>
+          </div>
+
+          <div class="ref-card" onclick="quickAsk('Comment fonctionne la comptabilisation des impôts différés IAS 12 avec actifs et passifs')">
+            <span class="norm-badge">IAS 12</span>
+            <h5>Impôts différés</h5>
+            <p>Différences temporaires, actifs et passifs d'impôt différé, taux futur</p>
+            <div class="ref-tag-row">
+              <span class="ref-tag">Diff. temp.</span>
+              <span class="ref-tag">AID</span>
+              <span class="ref-tag">PID</span>
+            </div>
+          </div>
+
+          <div class="ref-card" onclick="quickAsk('Explique IFRS 3 regroupement d\'entreprises — goodwill, juste valeur, participation ne donnant pas le contrôle')">
+            <span class="norm-badge">IFRS 3</span>
+            <h5>Regroupements d'entreprises</h5>
+            <p>Méthode de l'acquisition, goodwill, PNDPC, juste valeur à la date d'acquisition</p>
+            <div class="ref-tag-row">
+              <span class="ref-tag">Goodwill</span>
+              <span class="ref-tag">PNDPC</span>
+              <span class="ref-tag">JV</span>
+            </div>
+          </div>
+
+          <div class="ref-card" onclick="quickAsk('Explique IFRS 9 instruments financiers — classement et évaluation, dépréciation ECL')">
+            <span class="norm-badge">IFRS 9</span>
+            <h5>Instruments financiers</h5>
+            <p>Classement: CAOV, JVRN, JVARN. Dépréciation ECL sur 12 mois / vie entière</p>
+            <div class="ref-tag-row">
+              <span class="ref-tag">CAOV</span>
+              <span class="ref-tag">ECL</span>
+              <span class="ref-tag">Couverture</span>
+            </div>
+          </div>
+
+          <div class="ref-card" onclick="quickAsk('Comment reconnaître les revenus selon IFRS 15 — les 5 étapes avec exemple')">
+            <span class="norm-badge">IFRS 15</span>
+            <h5>Produits des contrats</h5>
+            <p>5 étapes : identifier contrat, obligations, prix transaction, affecter, comptabiliser</p>
+            <div class="ref-tag-row">
+              <span class="ref-tag">5 étapes</span>
+              <span class="ref-tag">OP</span>
+              <span class="ref-tag">Revenu</span>
+            </div>
+          </div>
+
+          <div class="ref-card" onclick="quickAsk('Explique IAS 19 avantages du personnel — DBO, coût des services, taux d\'actualisation')">
+            <span class="norm-badge">IAS 19</span>
+            <h5>Avantages du personnel</h5>
+            <p>DBO, actif/passif net, coût des services, retours sur actifs, réévaluations</p>
+            <div class="ref-tag-row">
+              <span class="ref-tag">DBO</span>
+              <span class="ref-tag">Retraite</span>
+              <span class="ref-tag">Réévaluation</span>
+            </div>
+          </div>
+
+          <div class="ref-card" onclick="quickAsk('Comment comptabiliser les provisions et passifs éventuels selon IAS 37 ?')">
+            <span class="norm-badge">IAS 37</span>
+            <h5>Provisions & Passifs éventuels</h5>
+            <p>Obligation actuelle, sortie probable, estimation fiable — critères de comptabilisation</p>
+            <div class="ref-tag-row">
+              <span class="ref-tag">Provision</span>
+              <span class="ref-tag">Éventuel</span>
+              <span class="ref-tag">Actif éventuel</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// CPA Agent — AI Core
+// ══════════════════════════════════════════════════════════════
+
+let history = [];
+let busy = false;
+let currentModule = 'general';
+
+const MODULE_CONTEXTS = {
+  general: '',
+  ifrs: 'Focus sur les normes IFRS et IAS. Cite toujours la norme applicable.',
+  aspe: 'Focus sur les Normes comptables pour les entreprises à capital fermé (ASPE) du Canada. Compare avec IFRS si pertinent.',
+  consolidation: 'Focus sur la consolidation des états financiers, IFRS 10, IFRS 3, éliminations intercompagnies, PNDPC.',
+  instruments: 'Focus sur IFRS 9 instruments financiers — classement, évaluation, dépréciation ECL, comptabilité de couverture.',
+  fiscalite: 'Focus sur la fiscalité canadienne — impôt des sociétés, IAS 12, impôts différés, planification fiscale.',
+  audit: 'Focus sur l\'audit et la certification — normes ISA, NCA Canada, risque d\'audit, procédures.',
+  couts: 'Focus sur la comptabilité de gestion et de coûts — coût de revient, analyse des écarts, budgets, prix de cession interne.',
+};
+
+const SYSTEM_PROMPT = `Tu es un expert-comptable et professeur de CPA Canada, spécialisé en comptabilité avancée.
+
+Tu parles UNIQUEMENT en français canadien. Tu utilises la terminologie comptable française standard au Canada.
+
+TES EXPERTISES :
+- IFRS complètes (IFRS 1 à 17, IAS 1 à 41) avec focus sur l'examen CPA Canada
+- ASPE (Normes comptables pour entreprises à capital fermé)
+- Comptabilité avancée : consolidation, regroupements d'entreprises (IFRS 3), instruments financiers (IFRS 9)
+- Impôts différés (IAS 12), avantages du personnel (IAS 19), locations (IFRS 16)
+- Dépréciation des actifs (IAS 36), provisions (IAS 37), revenus (IFRS 15)
+- Fiscalité canadienne, audit et certification, comptabilité de gestion
+
+COMMENT RÉPONDRE :
+1. Commence par identifier la norme applicable (ex: "Selon IAS 36...")
+2. Explique le principe théorique brièvement
+3. Fournis les écritures de journal complètes avec débit/crédit quand applicable
+4. Donne des formules mathématiques quand pertinent
+5. Donne un exemple chiffré si possible
+6. Mentionne les différences IFRS vs ASPE si pertinent
+7. Signale les pièges fréquents à l'examen CPA
+
+FORMAT des écritures de journal:
+- Toujours avec Dr/Cr clairement indiqués
+- Montants alignés
+- Explication du raisonnement
+
+STYLE : Professionnel mais accessible. Pédagogique. Précis. Cite les normes.
+Réponds en français québécois/canadien standard.`;
+
+function setModule(mod, btn) {
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentModule = mod;
+  const names = {
+    general: 'Assistant général',
+    ifrs: 'IFRS / IAS',
+    aspe: 'ASPE',
+    consolidation: 'Consolidation',
+    instruments: 'Instruments financiers',
+    fiscalite: 'Fiscalité',
+    audit: 'Audit & Certification',
+    couts: 'Comptabilité de coûts',
+  };
+  if (mod !== 'general') {
+    quickAsk(`Mode activé : ${names[mod]}. Présente-moi les sujets clés de ce module pour l'examen CPA Canada.`);
+  }
+}
+
+function quickAsk(text) {
+  document.getElementById('user-input').value = text;
+  sendMessage();
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function clearChat() {
+  history = [];
+  const msgs = document.getElementById('messages');
+  msgs.innerHTML = '';
+  addWelcomeBack();
+}
+
+function addWelcomeBack() {
+  addBotHTML(`<b>Conversation effacée.</b> Prêt pour un nouveau problème comptable !<br><br>
+  <div class="info-box tip"><span class="ib-icon">💡</span><span class="ib-text">Posez votre problème avec des chiffres pour une solution complète avec écritures de journal.</span></div>`);
+}
+
+function addUserMsg(text) {
+  const msgs = document.getElementById('messages');
+  const d = document.createElement('div');
+  d.className = 'msg user';
+  d.innerHTML = `<div class="msg-av">Moi</div><div class="bubble" style="background:var(--navy);color:#f0ead8;border-color:var(--navy);border-radius:16px 4px 16px 16px">${escHtml(text)}</div>`;
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addBotHTML(html) {
+  const msgs = document.getElementById('messages');
+  const d = document.createElement('div');
+  d.className = 'msg bot';
+  d.innerHTML = `<div class="msg-av">CPA</div><div class="bubble">${html}</div>`;
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function showThinking() {
+  const msgs = document.getElementById('messages');
+  const d = document.createElement('div');
+  d.className = 'thinking-row';
+  d.id = 'thinking';
+  d.innerHTML = `<div class="msg-av" style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--gold),#8b6820);display:flex;align-items:center;justify-content:center;font-size:14px;color:white;font-family:'DM Serif Display',serif;flex-shrink:0">CPA</div>
+    <div class="thinking-dots"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div>`;
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function hideThinking() {
+  const el = document.getElementById('thinking');
+  if (el) el.remove();
+}
+
+function escHtml(t) {
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// Format AI response into rich accounting HTML
+function formatResponse(text) {
+  let html = text;
+
+  // Journal entries — detect patterns like "Dr X  / Cr Y" or table-like structures
+  html = html.replace(/```([\s\S]*?)```/g, (_, code) => {
+    const lines = code.trim().split('\n');
+    let rows = '';
+    lines.forEach(line => {
+      if (line.match(/^\s*(Dr|Dt|Débit|Déb)\s+/i)) {
+        const parts = line.split(/\s{2,}|\t/);
+        rows += `<div class="je-row"><span>${parts[0]||''}</span><span class="dr">${parts[1]||''}</span><span class="cr"></span></div>`;
+      } else if (line.match(/^\s*(Cr|Ct|Crédit|Crd)\s+/i)) {
+        const parts = line.split(/\s{2,}|\t/);
+        rows += `<div class="je-row"><span style="padding-left:20px">${parts[0]||''}</span><span class="dr"></span><span class="cr">${parts[1]||''}</span></div>`;
+      } else if (line.trim()) {
+        rows += `<div class="je-row"><span colspan="3" style="color:var(--text2);font-style:italic">${line}</span></div>`;
+      }
+    });
+    return `<div class="journal-entry">
+      <div class="je-row header"><span>Compte</span><span class="dr">Débit</span><span class="cr">Crédit</span></div>
+      ${rows}
+    </div>`;
+  });
+
+  // Bold **text**
+  html = html.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+  // Italic *text*
+  html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+  // Norm references like [IAS 36] or [IFRS 9]
+  html = html.replace(/\[(IAS|IFRS|ASPE|NCA|ISA)\s*(\d+[A-Z]?)\]/gi, '<span class="ref-tag">$1 $2</span>');
+
+  // Formula lines: lines starting with = or containing = and numbers
+  html = html.replace(/^(Formule\s*:?\s*.+)$/gm, '<div class="formula-box"><div class="formula-label">Formule</div>$1</div>');
+
+  // ⚠️ warnings
+  html = html.replace(/(⚠️.*)/g, '<div class="info-box warn"><span class="ib-icon">⚠️</span><span class="ib-text">$1</span></div>');
+  // ✅ confirmations
+  html = html.replace(/(✅.*)/g, '<div class="info-box ok"><span class="ib-icon">✅</span><span class="ib-text">$1</span></div>');
+  // 💡 tips
+  html = html.replace(/(💡.*)/g, '<div class="info-box tip"><span class="ib-icon">💡</span><span class="ib-text">$1</span></div>');
+  // 📌 notes
+  html = html.replace(/(📌.*)/g, '<div class="info-box rule"><span class="ib-icon">📌</span><span class="ib-text">$1</span></div>');
+
+  // Headers ##
+  html = html.replace(/^#{1,3}\s+(.+)$/gm, '<h4>$1</h4>');
+
+  // Newlines
+  html = html.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+
+  return html;
+}
+
+async function sendMessage() {
+  if (busy) return;
+  const inp = document.getElementById('user-input');
+  const text = inp.value.trim();
+  if (!text) return;
+
+  inp.value = '';
+  inp.style.height = 'auto';
+  busy = true;
+  document.getElementById('send-btn').disabled = true;
+
+  addUserMsg(text);
+  showThinking();
+
+  // Build system with module context
+  const modCtx = MODULE_CONTEXTS[currentModule] || '';
+  const fullSystem = SYSTEM_PROMPT + (modCtx ? '\n\nCONTEXTE ACTUEL: ' + modCtx : '');
+
+  history.push({ role: 'user', content: text });
+  if (history.length > 24) history = history.slice(-20);
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2000,
+        system: fullSystem,
+        messages: history,
+      })
+    });
+
+    const data = await resp.json();
+    const reply = data.content?.[0]?.text || 'Désolé, une erreur s\'est produite. Veuillez réessayer.';
+    history.push({ role: 'assistant', content: reply });
+
+    hideThinking();
+    addBotHTML(formatResponse(reply));
+
+  } catch (err) {
+    hideThinking();
+    addBotHTML('<div class="info-box warn"><span class="ib-icon">⚠️</span><span class="ib-text">Erreur de connexion. Vérifiez votre connexion internet et réessayez.</span></div>');
+    console.error(err);
+  }
+
+  busy = false;
+  document.getElementById('send-btn').disabled = false;
+}
+
+// Init
+window.onload = () => {
+  document.getElementById('user-input').focus();
+};
+</script>
+</body>
+</html>
